@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.android.internal.telephony.gsm.stk.AppInterface;
 import com.android.internal.telephony.gsm.stk.Menu;
 import com.android.internal.telephony.gsm.stk.Item;
+import com.android.internal.telephony.gsm.stk.Input;
 import com.android.internal.telephony.gsm.stk.ResultCode;
 import com.android.internal.telephony.gsm.stk.StkCmdMessage;
 import com.android.internal.telephony.gsm.stk.StkCmdMessage.BrowserSettings;
@@ -477,7 +478,8 @@ public class StkAppService extends Service implements Runnable {
         case RES_ID_INPUT:
             StkLog.d(this, "RES_ID_INPUT");
             String input = args.getString(INPUT);
-            if (mCurrentCmd.geInput().yesNo) {
+            Input cmdInput = mCurrentCmd.geInput();
+            if (cmdInput != null && cmdInput.yesNo) {
                 boolean yesNoSelection = input
                         .equals(StkInputActivity.YES_STR_RESPONSE);
                 resMsg.setYesNo(yesNoSelection);
@@ -696,7 +698,7 @@ public class StkAppService extends Service implements Runnable {
 
     private void launchIdleText() {
         TextMessage msg = mCurrentCmd.geTextMessage();
-        if (msg.text == null) {
+        if (msg == null || msg.text == null) {
             mNotificationManager.cancel(STK_NOTIFICATION_ID);
         } else {
             Notification notification = new Notification();
